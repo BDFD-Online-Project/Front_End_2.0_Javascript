@@ -121,3 +121,39 @@ function highlight2(strings, ...values) {
 
 const temp2 = highlight2`${user2} has commented on your topic ${topic2}`;
 document.getElementById('demo3').innerHTML = temp2;
+
+const addCommentForm = document.querySelector('.add-comment');
+const textarea = document.querySelector('.comment-text');
+const commentDiv = document.querySelector('.comment');
+const user = 'Johnny';
+
+// addCommentForm.addEventListener('submit', function(event){
+//   event.preventDefault();
+//   const newComment = textarea.value.trim();
+//   if (newComment) {
+//     commentDiv.innerHTML = `
+//     <div class="comment-header">${user}</div>
+//     <div class="comment-body">${textarea.value}</div>
+//     `;
+//     textarea.value = '';
+//   }
+// });
+function sanitize(strings, ...values) {
+  const dirty = strings.reduce(
+    (prev, curr, i) => `${prev}${curr}${values[i] || ''}`,
+    ''
+  );
+  return DOMPurify.sanitize(dirty);
+}
+
+addCommentForm.addEventListener('submit', function(event) {
+  event.preventDefault();
+  const newComment = textarea.value.trim();
+  if (newComment) {
+    commentDiv.innerHTML = sanitize`
+    <div class="comment-header">${user}</div>
+    <div class="comment-body">${textarea.value}</div>
+    `;
+    textarea.value = '';
+  }
+});
